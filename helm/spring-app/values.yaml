@@ -1,0 +1,20 @@
+cp-zookeeper:
+  servers: 3
+
+cp-kafka:
+  cp-zookeeper.enabled: false
+  cp-zookeeper.url: "{{ tpl zookeeper.url }}"
+  brokers: 3
+
+postgresql:
+  auth:
+    username: user
+    password: password
+    database: spring-kafka-db
+
+kafka:
+  dbservice:
+    topic: secondTopic
+  topics:
+    first: firstTopic
+    second: secondTopic

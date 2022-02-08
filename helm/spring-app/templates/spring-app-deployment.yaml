@@ -1,0 +1,25 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          env:
+            - name: KAFKA_SERVER
+              value: {{ .Release.Name }}-cp-kafka-0.{{ .Release.Name }}-cp-kafka-headless.default:9092
+            - name: KAFKA_TOPICS_FIRST
+              value: {{ .Values.kafka.topics.first }}
+            - name: KAFKA_TOPICS_SECOND
+              value: {{ .Values.kafka.topics.second }}
+          image: daniilkorotaev/spring-kafka-try-out:33.0
+          ports:
+            - containerPort: 8080
