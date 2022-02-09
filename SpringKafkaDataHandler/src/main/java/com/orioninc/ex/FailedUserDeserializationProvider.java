@@ -5,7 +5,7 @@ import org.springframework.kafka.support.serializer.FailedDeserializationInfo;
 
 import java.util.function.Function;
 
-public class FailedDeserializationProvider implements Function<FailedDeserializationInfo, User> {
+public class FailedUserDeserializationProvider implements Function<FailedDeserializationInfo, User> {
     @Override
     public User apply(FailedDeserializationInfo failedDeserializationInfo) {
         System.out.println("deserialization failed");

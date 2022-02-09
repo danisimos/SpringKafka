@@ -1,6 +1,7 @@
 package com.orioninc.services;
 
 import com.orioninc.models.User;
+import com.orioninc.models.UserEvent;
 import com.orioninc.properties.KafkaProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -12,13 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class ListenService {
     @Autowired
-    KafkaProperties kafkaProperties;
+    UserService userService;
 
-    @Autowired
-    KafkaTemplate<String, User> kafkaTemplateJson;
     @Autowired
     KafkaTemplate<String, String> kafkaTemplateString;
 
@@ -41,26 +43,17 @@ public class ListenService {
         return value;
     }
 
-    @KafkaListener(topics = "#{'${kafka.topics.first}'}", groupId = "json", containerFactory = "jsonUsersKafkaListenerContainerFactory")
-    public void listenJsonUsers(User user,
+    @KafkaListener(topics = "#{'${kafka.topics.first}'}",
+            groupId = "json",
+            containerFactory = "jsonUsersKafkaListenerContainerFactory")
+    public void listenJsonUsers(UserEvent userEvent,
                                 @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long timestamp,
-                                @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+                                @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) User user,
                                 @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName) {
-        System.out.println("received from: " + topicName + user);
+        System.out.println("received from: " + topicName + user + " " + userEvent);
         user.setHandledTimestamp(timestamp);
 
-        ListenableFuture<SendResult<String, User>> listenableFuture = kafkaTemplateJson.sendDefault(key, user);
-        listenableFuture.addCallback(new ListenableFutureCallback<>() {
-            @Override
-            public void onFailure(Throwable ex) {
-                System.out.println("Failed to send");
-            }
-
-            @Override
-            public void onSuccess(SendResult<String, User> result) {
-                System.out.println("Success sent to \"topic2\"");
-            }
-        });
+        userService.process(user, userEvent);
     }
 
 }

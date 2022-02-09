@@ -20,6 +20,8 @@ spec:
               value: {{ .Values.kafka.topics.first }}
             - name: KAFKA_TOPICS_SECOND
               value: {{ .Values.kafka.topics.second }}
+            - name: DATA_INTERVAL
+              value: {{ .Values.data.interval }}
           image: daniilkorotaev/spring-kafka-try-out:33.0
           ports:
             - containerPort: 8080

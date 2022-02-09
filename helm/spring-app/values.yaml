@@ -7,6 +7,9 @@ cp-kafka:
   brokers: 3
 
 postgresql:
+  primary:
+    service:
+      type: LoadBalancer
   auth:
     username: user
     password: password
@@ -18,3 +21,6 @@ kafka:
   topics:
     first: firstTopic
     second: secondTopic
+
+data:
+  interval: 300000

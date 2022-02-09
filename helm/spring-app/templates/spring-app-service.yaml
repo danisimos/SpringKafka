@@ -9,5 +9,7 @@ spec:
     - port: 8080
       name: {{ .Release.Name }}-port
       protocol: TCP
+      targetPort: 8080
+  type: LoadBalancer
   selector:
     app: {{ .Release.Name }}

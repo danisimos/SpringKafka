@@ -1,13 +1,13 @@
 package com.orioninc.config;
 
-import com.orioninc.ex.FailedDeserializationProvider;
+import com.orioninc.ex.FailedUserDeserializationProvider;
 import com.orioninc.models.User;
+import com.orioninc.models.UserIntervalData;
 import com.orioninc.properties.KafkaProperties;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -68,12 +68,14 @@ public class ApplicationConfig {
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
 
-        config.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
+        config.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
 
-        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.orioninc.models.User");
+        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.orioninc.models.UserEvent");
+        config.put(JsonDeserializer.KEY_DEFAULT_TYPE, "com.orioninc.models.User");
 
-        config.put(ErrorHandlingDeserializer.VALUE_FUNCTION, FailedDeserializationProvider.class);
+        config.put(ErrorHandlingDeserializer.VALUE_FUNCTION, FailedUserDeserializationProvider.class);
+        config.put(ErrorHandlingDeserializer.KEY_FUNCTION, FailedUserDeserializationProvider.class);
 
         return new DefaultKafkaConsumerFactory<>(config);
     }
@@ -86,7 +88,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ProducerFactory<String, User> producerFactoryJson() {
+    public ProducerFactory<User, UserIntervalData> producerFactoryJson() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -114,8 +116,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, User> kafkaTemplateJson() {
-        KafkaTemplate<String, User> kafkaTemplate = new KafkaTemplate<>(producerFactoryJson());
+    public KafkaTemplate<User, UserIntervalData> kafkaTemplateJson() {
+        KafkaTemplate<User, UserIntervalData> kafkaTemplate = new KafkaTemplate<>(producerFactoryJson());
         kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getSecond());
 
         return kafkaTemplate;
