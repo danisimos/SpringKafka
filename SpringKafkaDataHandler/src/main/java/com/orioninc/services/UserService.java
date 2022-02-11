@@ -32,7 +32,7 @@ public class UserService {
 
             Thread interval = new Thread(() -> {
                 try {
-                    Thread.sleep(applicationProperties.getInterval());
+                    Thread.sleep(applicationProperties.getInterval());;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
