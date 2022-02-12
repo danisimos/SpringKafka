@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Period;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,8 @@ public class UserDataProcessingService {
         int averageWeekNumber = (int) usersEvents
                 .values()
                 .stream()
-                .flatMap(l -> l.stream())
-                .map(s -> s.getWeekNumber())
+                .flatMap(Collection::stream)
+                .map(Subscription::getWeekNumber)
                 .mapToInt(Integer::intValue)
                 .average()
                 .orElse(0);
