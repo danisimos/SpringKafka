@@ -1,14 +1,16 @@
 package com.orioninc.config;
 
-import com.orioninc.ex.FailedUserDeserializationProvider;
+import com.orioninc.exceptions.FailedSubscriptionDeserializationProvider;
+import com.orioninc.exceptions.FailedUserDeserializationProvider;
+import com.orioninc.models.Interval;
+import com.orioninc.models.Subscription;
 import com.orioninc.models.User;
-import com.orioninc.models.UserIntervalData;
+import com.orioninc.models.ProcessedIntervalData;
 import com.orioninc.properties.KafkaProperties;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,6 +23,7 @@ import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +32,7 @@ import java.util.Map;
 @ComponentScan(basePackages = "com.orioninc")
 @EnableKafka
 @PropertySource("classpath:application.properties")
+@EnableScheduling
 public class ApplicationConfig {
     @Autowired
     KafkaProperties kafkaProperties;
@@ -61,7 +65,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, User> consumerFactory() {
+    public ConsumerFactory<User, Subscription> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
 
@@ -71,53 +75,53 @@ public class ApplicationConfig {
         config.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
 
-        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.orioninc.models.UserEvent");
+        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.orioninc.models.Subscription");
         config.put(JsonDeserializer.KEY_DEFAULT_TYPE, "com.orioninc.models.User");
 
         config.put(ErrorHandlingDeserializer.VALUE_FUNCTION, FailedUserDeserializationProvider.class);
-        config.put(ErrorHandlingDeserializer.KEY_FUNCTION, FailedUserDeserializationProvider.class);
+        config.put(ErrorHandlingDeserializer.KEY_FUNCTION, FailedSubscriptionDeserializationProvider.class);
 
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, User> jsonUsersKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, User> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<User, Subscription> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<User, Subscription> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 
     @Bean
-    public ProducerFactory<User, UserIntervalData> producerFactoryJson() {
+    public ProducerFactory<User, Subscription> producerFactorySubscription() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
         return new DefaultKafkaProducerFactory<>(config);
     }
 
     @Bean
-    public ProducerFactory<String, String> producerFactoryString() {
-        Map<String, Object> config = new HashMap<>();
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-
-        return new DefaultKafkaProducerFactory<>(config);
-    }
-
-    @Bean
-    public KafkaTemplate<String, String> kafkaTemplateString() {
-        KafkaTemplate<String, String> kafkaTemplate = new KafkaTemplate<>(producerFactoryString());
+    public KafkaTemplate<User, Subscription> kafkaTemplateSubscription() {
+        KafkaTemplate<User, Subscription> kafkaTemplate = new KafkaTemplate<>(producerFactorySubscription());
         kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getFirst());
 
         return kafkaTemplate;
     }
 
     @Bean
-    public KafkaTemplate<User, UserIntervalData> kafkaTemplateJson() {
-        KafkaTemplate<User, UserIntervalData> kafkaTemplate = new KafkaTemplate<>(producerFactoryJson());
+    public ProducerFactory<Interval, ProcessedIntervalData> producerFactoryProcessedData() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+    @Bean
+    public KafkaTemplate<Interval, ProcessedIntervalData> kafkaTemplateProcessedData() {
+        KafkaTemplate<Interval, ProcessedIntervalData> kafkaTemplate = new KafkaTemplate<>(producerFactoryProcessedData());
         kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getSecond());
 
         return kafkaTemplate;

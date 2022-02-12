@@ -1,4 +1,4 @@
-package com.orioninc.ex;
+package com.orioninc.exceptions;
 
 import com.orioninc.models.User;
 import org.springframework.kafka.support.serializer.FailedDeserializationInfo;
