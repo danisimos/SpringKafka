@@ -1,8 +1,9 @@
 package com.orioninc.services.impl;
 
-import com.orioninc.models.User;
+import com.orioninc.models.Interval;
+import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.services.TopicListener;
-import com.orioninc.services.UsersService;
+import com.orioninc.services.ProcessedIntervalSubscriptionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -12,16 +13,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class TopicListenerImpl implements TopicListener {
     @Autowired
-    UsersService usersService;
+    ProcessedIntervalSubscriptionsService processedIntervalSubscriptionsService;
 
     @KafkaListener(topics = "#{'${kafka.topic}'}", groupId = "group1", containerFactory = "kafkaListenerContainerFactory")
-    public void listenJsonUsers(User user,
-                                @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
-                                @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName) {
-        System.out.println("received from: " + topicName + user);
+    public void listenProcessedIntervalSubscriptions(ProcessedIntervalSubscriptions subscriptions,
+                                                     @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY)Interval interval,
+                                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName) {
+        System.out.println("Received from: " + topicName + subscriptions);
 
-        usersService.saveUser(user);
+        processedIntervalSubscriptionsService.saveProcessedIntervalSubscriptions(subscriptions);
 
-        System.out.println("saved in database");
+        System.out.println("Saved in database");
     }
 }

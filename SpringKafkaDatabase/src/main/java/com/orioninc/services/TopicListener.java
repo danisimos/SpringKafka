@@ -1,7 +1,8 @@
 package com.orioninc.services;
 
-import com.orioninc.models.User;
+import com.orioninc.models.Interval;
+import com.orioninc.models.ProcessedIntervalSubscriptions;
 
 public interface TopicListener {
-    void listenJsonUsers(User user, String key, String topicName);
+    void listenProcessedIntervalSubscriptions(ProcessedIntervalSubscriptions data, Interval interval, String topicName);
 }

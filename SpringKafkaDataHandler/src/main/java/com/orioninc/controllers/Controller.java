@@ -23,6 +23,9 @@ public class Controller {
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public String index(@RequestBody ObjectNode objectNode) {
         ObjectMapper mapper = new ObjectMapper();
+        if(objectNode.get("user") == null) {
+            return "no user";
+        }
         User user = mapper.convertValue(objectNode.get("user"), User.class);
         Subscription subscription = mapper.convertValue(objectNode.get("subscription"), Subscription.class);
         System.out.println(subscription);

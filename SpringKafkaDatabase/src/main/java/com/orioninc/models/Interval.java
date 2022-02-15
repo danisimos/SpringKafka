@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
-    private String firstName;
-    private String lastName;
-    private int age;
-    private long handledTimestamp;
+public class Interval {
+    private long timestampFrom;
+    private long timestampTo;
 }

@@ -29,7 +29,7 @@ public class IntervalSubscriptionsProcessingService {
 
         ProcessedIntervalSubscriptions processedIntervalSubscriptions = ProcessedIntervalSubscriptions
                 .builder()
-                .averageWeekNumber(averageWeekNumber)
+                .averageWeekCount(averageWeekNumber)
                 .interval(interval)
                 .build();
 
