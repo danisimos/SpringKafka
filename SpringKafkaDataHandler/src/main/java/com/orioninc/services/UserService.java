@@ -7,7 +7,6 @@ import com.orioninc.properties.ApplicationProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
@@ -24,15 +23,6 @@ public class UserService {
 
     Map<User, List<UserEvent>> usersEvents = Collections.synchronizedMap(new HashMap<>());
 
-    @Scheduled(cron = "0 0/10 12-16 * * MON-FRI")
-    public void interval() {
-        Thread thread = new Thread(() -> {
-
-        });
-
-        thread.start();
-    }
-
     public void process(User user, UserEvent userEvent) {
         if(!usersEvents.containsKey(user)) {
             List<UserEvent> userEvents = new ArrayList<>();
@@ -42,7 +32,7 @@ public class UserService {
 
             Thread interval = new Thread(() -> {
                 try {
-                    Thread.sleep(applicationProperties.getInterval());
+                    Thread.sleep(applicationProperties.getInterval());;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

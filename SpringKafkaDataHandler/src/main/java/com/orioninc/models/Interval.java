@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserEvent {
-    private String event;
+public class Interval {
+    private long timestampFrom;
+    private long timestampTo;
 }

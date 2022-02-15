@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserIntervalData {
-    private User user;
-    private String data;
+public class Subscription {
+    private SubscriptionType subscriptionType;
+    private int weekNumber;
+    private long handledTimestamp;
 }

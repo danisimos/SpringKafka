@@ -6,6 +6,7 @@ cp-kafka:
   cp-zookeeper.url: "{{ tpl zookeeper.url }}"
   brokers: 3
 
+
 postgresql:
   primary:
     service:
@@ -22,5 +23,5 @@ kafka:
     first: firstTopic
     second: secondTopic
 
-data:
-  interval: 300000
+app:
+  users_process_interval: "0 0/1 8-17 * * ?"
