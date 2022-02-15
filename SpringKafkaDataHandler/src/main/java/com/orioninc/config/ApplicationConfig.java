@@ -21,6 +21,7 @@ import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.Map;
 @ComponentScan(basePackages = "com.orioninc")
 @EnableKafka
 @PropertySource("classpath:application.properties")
+@EnableScheduling
 public class ApplicationConfig {
     @Autowired
     KafkaProperties kafkaProperties;
