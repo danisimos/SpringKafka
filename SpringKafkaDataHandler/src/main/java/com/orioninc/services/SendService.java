@@ -3,7 +3,7 @@ package com.orioninc.services;
 import com.orioninc.models.Interval;
 import com.orioninc.models.Subscription;
 import com.orioninc.models.User;
-import com.orioninc.models.ProcessedIntervalData;
+import com.orioninc.models.ProcessedIntervalSubscriptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -17,7 +17,7 @@ public class SendService {
     KafkaTemplate<User, Subscription> kafkaTemplateSubscription;
 
     @Autowired
-    KafkaTemplate<Interval, ProcessedIntervalData> kafkaTemplateProcessedData;
+    KafkaTemplate<Interval, ProcessedIntervalSubscriptions> kafkaTemplateProcessedIntervalSubscriptions;
 
     public String send(User user, Subscription subscription) {
         ListenableFuture<SendResult<User, Subscription>> listenableFuture = kafkaTemplateSubscription.sendDefault(user, subscription);
@@ -37,8 +37,8 @@ public class SendService {
         return user.toString() + subscription.toString();
     }
 
-    public void send(Interval interval, ProcessedIntervalData processedIntervalData) {
-        ListenableFuture<SendResult<Interval, ProcessedIntervalData>> listenableFuture = kafkaTemplateProcessedData.sendDefault(interval, processedIntervalData);
+    public void send(Interval interval, ProcessedIntervalSubscriptions processedIntervalSubscriptions) {
+        ListenableFuture<SendResult<Interval, ProcessedIntervalSubscriptions>> listenableFuture = kafkaTemplateProcessedIntervalSubscriptions.sendDefault(interval, processedIntervalSubscriptions);
 
         listenableFuture.addCallback(new ListenableFutureCallback<>() {
             @Override
@@ -47,7 +47,7 @@ public class SendService {
             }
 
             @Override
-            public void onSuccess(SendResult<Interval, ProcessedIntervalData> result) {
+            public void onSuccess(SendResult<Interval, ProcessedIntervalSubscriptions> result) {
                 System.out.println("Success sent processed data");
             }
         });

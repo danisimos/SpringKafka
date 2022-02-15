@@ -11,6 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProcessedIntervalData {
+public class ProcessedIntervalSubscriptions {
+    private Interval interval;
     private int averageWeekNumber;
 }

@@ -5,7 +5,7 @@ import com.orioninc.exceptions.FailedUserDeserializationProvider;
 import com.orioninc.models.Interval;
 import com.orioninc.models.Subscription;
 import com.orioninc.models.User;
-import com.orioninc.models.ProcessedIntervalData;
+import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.properties.KafkaProperties;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -110,7 +110,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ProducerFactory<Interval, ProcessedIntervalData> producerFactoryProcessedData() {
+    public ProducerFactory<Interval, ProcessedIntervalSubscriptions> producerFactoryProcessedIntervalSubscriptions() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
@@ -120,8 +120,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public KafkaTemplate<Interval, ProcessedIntervalData> kafkaTemplateProcessedData() {
-        KafkaTemplate<Interval, ProcessedIntervalData> kafkaTemplate = new KafkaTemplate<>(producerFactoryProcessedData());
+    public KafkaTemplate<Interval, ProcessedIntervalSubscriptions> kafkaTemplateProcessedIntervalSubscriptions() {
+        KafkaTemplate<Interval, ProcessedIntervalSubscriptions> kafkaTemplate = new KafkaTemplate<>(producerFactoryProcessedIntervalSubscriptions());
         kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getSecond());
 
         return kafkaTemplate;

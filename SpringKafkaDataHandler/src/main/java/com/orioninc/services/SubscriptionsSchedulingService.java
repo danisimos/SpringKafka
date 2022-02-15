@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class UserSchedulingService {
+public class SubscriptionsSchedulingService {
     @Autowired
-    private UserDataProcessingService userDataProcessingService;
+    private IntervalSubscriptionsProcessingService intervalSubscriptionsProcessingService;
 
     private Map<User, List<Subscription>> usersEvents = Collections.synchronizedMap(new HashMap<>());
 
@@ -21,7 +21,7 @@ public class UserSchedulingService {
     public void interval() {
         long endIntervalTimestamp = System.currentTimeMillis();
 
-        userDataProcessingService.process(usersEvents, startIntervalTimestamp, endIntervalTimestamp);
+        intervalSubscriptionsProcessingService.process(usersEvents, startIntervalTimestamp, endIntervalTimestamp);
         usersEvents.clear();
 
         startIntervalTimestamp = endIntervalTimestamp;
