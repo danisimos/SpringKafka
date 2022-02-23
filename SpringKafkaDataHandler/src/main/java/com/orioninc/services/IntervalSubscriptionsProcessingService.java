@@ -7,9 +7,11 @@ import com.orioninc.models.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 @Service
 public class IntervalSubscriptionsProcessingService {
@@ -18,21 +20,22 @@ public class IntervalSubscriptionsProcessingService {
 
     public void process(Map<User, List<Subscription>> usersEvents, long timestampFrom, long timestampTo) {
         Interval interval = new Interval(timestampFrom, timestampTo);
-        int averageWeekNumber = (int) usersEvents
-                .values()
+
+        usersEvents
+                .entrySet()
                 .stream()
-                .flatMap(Collection::stream)
-                .map(Subscription::getWeekNumber)
-                .mapToInt(Integer::intValue)
-                .average()
-                .orElse(0);
-
-        ProcessedIntervalSubscriptions processedIntervalSubscriptions = ProcessedIntervalSubscriptions
-                .builder()
-                .averageWeekCount(averageWeekNumber)
-                .interval(interval)
-                .build();
-
-        sendService.send(interval, processedIntervalSubscriptions);
+                .map(e -> Map.entry(e.getKey(), e.getValue()
+                        .stream()
+                        .map(Subscription::getWeekNumber)
+                        .mapToInt(Integer::intValue)
+                        .average()
+                        .orElse(0)))
+                .map(e -> ProcessedIntervalSubscriptions
+                        .builder()
+                        .user(e.getKey())
+                        .interval(interval)
+                        .averageWeekCount(e.getValue().intValue())
+                        .build())
+                .forEach(p -> sendService.send(interval, p));
     }
 }

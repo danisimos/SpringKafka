@@ -4,6 +4,8 @@ import com.orioninc.models.Interval;
 import com.orioninc.models.Subscription;
 import com.orioninc.models.User;
 import com.orioninc.models.ProcessedIntervalSubscriptions;
+import lombok.RequiredArgsConstructor;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -12,12 +14,12 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Service
+@RequiredArgsConstructor
 public class SendService {
-    @Autowired
-    KafkaTemplate<User, Subscription> kafkaTemplateSubscription;
+    private final KafkaTemplate<User, Subscription> kafkaTemplateSubscription;
+    private final KafkaTemplate<Interval, ProcessedIntervalSubscriptions> kafkaTemplateProcessedIntervalSubscriptions;
 
-    @Autowired
-    KafkaTemplate<Interval, ProcessedIntervalSubscriptions> kafkaTemplateProcessedIntervalSubscriptions;
+    private static final Logger logger = Logger.getLogger(SendService.class);
 
     public String send(User user, Subscription subscription) {
         ListenableFuture<SendResult<User, Subscription>> listenableFuture = kafkaTemplateSubscription.sendDefault(user, subscription);
@@ -25,12 +27,12 @@ public class SendService {
         listenableFuture.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable ex) {
-                System.out.println("Failed send new subscription to " + kafkaTemplateSubscription.getDefaultTopic());
+                logger.info("Failed send new subscription to " + kafkaTemplateSubscription.getDefaultTopic());
             }
 
             @Override
             public void onSuccess(SendResult<User, Subscription> result) {
-                System.out.println("Subscription sent to " + kafkaTemplateSubscription.getDefaultTopic());
+                logger.info("Subscription sent to " + kafkaTemplateSubscription.getDefaultTopic());
             }
         });
 
@@ -43,12 +45,12 @@ public class SendService {
         listenableFuture.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable ex) {
-                System.out.println("Failed to send processed data");
+                logger.info("Failed to send processed data");
             }
 
             @Override
             public void onSuccess(SendResult<Interval, ProcessedIntervalSubscriptions> result) {
-                System.out.println("Success sent processed data");
+                logger.info("Success sent processed data");
             }
         });
     }

@@ -10,6 +10,7 @@ spec:
       name: {{ .Release.Name }}-port
       protocol: TCP
       targetPort: 8080
-  type: LoadBalancer
+      nodePort: 30080
+  type: NodePort
   selector:
     app: {{ .Release.Name }}

@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProcessedIntervalSubscriptions {
     private Interval interval;
+    private User user;
     private int averageWeekCount;
 }

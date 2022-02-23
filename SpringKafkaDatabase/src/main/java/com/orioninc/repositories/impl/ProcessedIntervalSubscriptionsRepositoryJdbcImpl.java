@@ -20,10 +20,10 @@ import java.util.Optional;
 public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements ProcessedIntervalSubscriptionsRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    private static final String SQL_INSERT_INTO = "insert into processed_interval_subscriptions(timestamp_from, timestamp_to, average_week_count) values (:from, :to, :averageWeekCount)";
+    private static final String SQL_INSERT_INTO = "insert into processed_interval_subscriptions(timestamp_from, timestamp_to, average_week_count, user_id) values (:from, :to, :averageWeekCount, :userId)";
     private static final String SQL_SELECT_ALL = "select * from processed_interval_subscriptions";
 
-    private final RowMapper<ProcessedIntervalSubscriptions> userRowMapper = (row, rowNumber) -> ProcessedIntervalSubscriptions.builder()
+    private final RowMapper<ProcessedIntervalSubscriptions> processedIntervalSubscriptionsRowMapperRowMapper = (row, rowNumber) -> ProcessedIntervalSubscriptions.builder()
             .interval(Interval.builder()
                     .timestampFrom(row.getLong("from"))
                     .timestampTo(row.getLong("to"))
@@ -37,7 +37,7 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
 
     @Override
     public List<ProcessedIntervalSubscriptions> findAll() {
-        return jdbcTemplate.query(SQL_SELECT_ALL, userRowMapper);
+        return jdbcTemplate.query(SQL_SELECT_ALL, processedIntervalSubscriptionsRowMapperRowMapper);
     }
 
     @Override
@@ -49,6 +49,7 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
         values.put("from", from);
         values.put("to", to);
         values.put("averageWeekCount", subscriptions.getAverageWeekCount());
+        values.put("userId", subscriptions.getUser().getId());
 
         SqlParameterSource parameterSource = new MapSqlParameterSource(values);
 
@@ -73,7 +74,7 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
     }
 
     @Override
-    public List<ProcessedIntervalSubscriptions> findByFirstName(Integer id) {
+    public List<ProcessedIntervalSubscriptions> findByAverageWeekCount(int averageWeekCount) {
         return null;
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -15,14 +16,15 @@ public class SubscriptionsSchedulingService {
 
     private Map<User, List<Subscription>> usersEvents = Collections.synchronizedMap(new HashMap<>());
 
-    private long startIntervalTimestamp;
+    private long startIntervalTimestamp = System.currentTimeMillis();
 
     @Scheduled(cron = "${app.users-process-interval}")
     public void interval() {
         long endIntervalTimestamp = System.currentTimeMillis();
 
-        intervalSubscriptionsProcessingService.process(usersEvents, startIntervalTimestamp, endIntervalTimestamp);
-        usersEvents.clear();
+        //intervalSubscriptionsProcessingService.process(usersEvents, startIntervalTimestamp, endIntervalTimestamp);
+        //usersEvents.clear();
+        System.out.println(new Timestamp(startIntervalTimestamp).toString() +  new Timestamp(endIntervalTimestamp).toString());
 
         startIntervalTimestamp = endIntervalTimestamp;
     }

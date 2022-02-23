@@ -5,12 +5,17 @@ cp-kafka:
   cp-zookeeper.enabled: false
   cp-zookeeper.url: "{{ tpl zookeeper.url }}"
   brokers: 3
+  nodeport:
+    enabled: true
 
 
 postgresql:
+
   primary:
     service:
-      type: LoadBalancer
+      nodePorts:
+        postgresql: 30032
+      type: NodePort
   auth:
     username: user
     password: password
