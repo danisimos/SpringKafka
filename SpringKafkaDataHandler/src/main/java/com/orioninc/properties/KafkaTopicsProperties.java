@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 public class KafkaTopicsProperties {
-    private String first;
-    private String second;
+    private String subscriptionsTopic;
+    private String intervalsTopic;
+    private String metricCountTopic;
 }

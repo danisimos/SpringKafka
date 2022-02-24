@@ -7,11 +7,8 @@ import com.orioninc.models.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.AbstractMap;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 @Service
 public class IntervalSubscriptionsProcessingService {
@@ -36,6 +33,6 @@ public class IntervalSubscriptionsProcessingService {
                         .interval(interval)
                         .averageWeekCount(e.getValue().intValue())
                         .build())
-                .forEach(p -> sendService.send(interval, p));
+                .forEach(p -> sendService.sendToIntervalsTopic(interval, p));
     }
 }

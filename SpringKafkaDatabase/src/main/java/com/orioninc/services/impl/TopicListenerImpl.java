@@ -18,7 +18,7 @@ public class TopicListenerImpl implements TopicListener {
 
     private static final Logger logger = Logger.getLogger(TopicListenerImpl.class);
 
-    @KafkaListener(topics = "#{'${kafka.topic}'}", groupId = "group1", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "${kafka.topics.intervals-topic}", groupId = "group1", containerFactory = "kafkaListenerContainerFactory")
     public void listenProcessedIntervalSubscriptions(ProcessedIntervalSubscriptions subscriptions,
                                                      @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY)Interval interval,
                                                      @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName) {

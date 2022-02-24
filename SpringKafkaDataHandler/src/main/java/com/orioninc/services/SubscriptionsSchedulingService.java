@@ -16,17 +16,22 @@ public class SubscriptionsSchedulingService {
 
     private Map<User, List<Subscription>> usersEvents = Collections.synchronizedMap(new HashMap<>());
 
-    private long startIntervalTimestamp = System.currentTimeMillis();
+    private long startIntervalTimestamp = 0;
 
     @Scheduled(cron = "${app.users-process-interval}")
     public void interval() {
+        if(startIntervalTimestamp == 0) {
+            startIntervalTimestamp = System.currentTimeMillis();
+            return;
+        }
+
         long endIntervalTimestamp = System.currentTimeMillis();
 
         //intervalSubscriptionsProcessingService.process(usersEvents, startIntervalTimestamp, endIntervalTimestamp);
         //usersEvents.clear();
-        System.out.println(new Timestamp(startIntervalTimestamp).toString() +  new Timestamp(endIntervalTimestamp).toString());
+        System.out.println(new Timestamp(startIntervalTimestamp).toString() + "         " + new Timestamp(endIntervalTimestamp).toString());
 
-        startIntervalTimestamp = endIntervalTimestamp;
+        startIntervalTimestamp = 0;
     }
 
     public void process(User user, Subscription subscription) {

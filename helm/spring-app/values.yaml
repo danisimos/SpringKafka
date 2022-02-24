@@ -22,11 +22,10 @@ postgresql:
     database: spring-kafka-db
 
 kafka:
-  dbservice:
-    topic: secondTopic
   topics:
-    first: firstTopic
-    second: secondTopic
+    subscriptions_topic: subscriptionsTopic
+    intervals_topic: intervalsTopic
+    metric_count_topic: metricCountTopic
 
 app:
   users_process_interval: "0/30 * 8-21 * * ?"

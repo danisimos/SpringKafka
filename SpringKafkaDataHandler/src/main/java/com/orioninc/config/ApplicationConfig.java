@@ -42,18 +42,26 @@ public class ApplicationConfig {
     KafkaProperties kafkaProperties;
 
     @Bean
-    public NewTopic firstTopic() {
-        return TopicBuilder.name(kafkaProperties.getTopics().getFirst())
+    public NewTopic subscriptionsTopic() {
+        return TopicBuilder.name(kafkaProperties.getTopics().getSubscriptionsTopic())
                 .partitions(3)
-                .replicas(3)
+                .replicas(1)
                 .build();
     }
 
     @Bean
-    public NewTopic secondTopic() {
-        return TopicBuilder.name(kafkaProperties.getTopics().getSecond())
+    public NewTopic intervalsTopic() {
+        return TopicBuilder.name(kafkaProperties.getTopics().getIntervalsTopic())
                 .partitions(3)
-                .replicas(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic metricCountTopic() {
+        return TopicBuilder.name(kafkaProperties.getTopics().getMetricCountTopic())
+                .partitions(3)
+                .replicas(1)
                 .build();
     }
 
@@ -63,7 +71,7 @@ public class ApplicationConfig {
         configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
 
         KafkaAdmin kafkaAdmin = new KafkaAdmin(configs);
-        kafkaAdmin.createOrModifyTopics(firstTopic(), secondTopic());
+        kafkaAdmin.createOrModifyTopics(subscriptionsTopic(), intervalsTopic(), metricCountTopic());
 
         return kafkaAdmin;
     }
@@ -108,7 +116,7 @@ public class ApplicationConfig {
     @Bean
     public KafkaTemplate<User, Subscription> kafkaTemplateSubscription() {
         KafkaTemplate<User, Subscription> kafkaTemplate = new KafkaTemplate<>(producerFactorySubscription());
-        kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getFirst());
+        kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getSubscriptionsTopic());
 
         return kafkaTemplate;
     }
@@ -126,7 +134,25 @@ public class ApplicationConfig {
     @Bean
     public KafkaTemplate<Interval, ProcessedIntervalSubscriptions> kafkaTemplateProcessedIntervalSubscriptions() {
         KafkaTemplate<Interval, ProcessedIntervalSubscriptions> kafkaTemplate = new KafkaTemplate<>(producerFactoryProcessedIntervalSubscriptions());
-        kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getSecond());
+        kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getIntervalsTopic());
+
+        return kafkaTemplate;
+    }
+
+    @Bean
+    public ProducerFactory<Integer, Subscription> producerFactoryMetricCount() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+    @Bean
+    public KafkaTemplate<Integer, Subscription> kafkaTemplateMetricCount() {
+        KafkaTemplate<Integer, Subscription> kafkaTemplate = new KafkaTemplate<>(producerFactoryMetricCount());
+        kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getMetricCountTopic());
 
         return kafkaTemplate;
     }
