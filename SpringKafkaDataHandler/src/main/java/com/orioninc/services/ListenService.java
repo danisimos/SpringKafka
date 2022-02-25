@@ -18,7 +18,7 @@ public class ListenService {
 
     private static final Logger logger = Logger.getLogger(ListenService.class);
 
-    @KafkaListener(topics = "${kafka.topics.first}", groupId = "group1")
+    @KafkaListener(topics = "${kafka.topics.subscriptions-topic}", groupId = "group1")
     public void listenJsonUsers(Subscription subscription,
                                 @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) User user,
                                 @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName) {

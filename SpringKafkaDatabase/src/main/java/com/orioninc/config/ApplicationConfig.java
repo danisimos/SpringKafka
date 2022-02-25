@@ -1,12 +1,15 @@
 package com.orioninc.config;
 
 import com.orioninc.exceptions.FailedIntervalDeserializationProvider;
+import com.orioninc.exceptions.FailedMetricCountDeserializationProvider;
 import com.orioninc.exceptions.FailedProcessedIntervalSubscriptionsDeserializationProvider;
 import com.orioninc.models.Interval;
 import com.orioninc.models.ProcessedIntervalSubscriptions;
+import com.orioninc.models.Subscription;
 import com.orioninc.properties.DBProperties;
 import com.orioninc.properties.KafkaProperties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -36,7 +39,7 @@ public class ApplicationConfig {
     DBProperties dbProperties;
 
     @Bean
-    public ConsumerFactory<Interval, ProcessedIntervalSubscriptions> consumerFactory() {
+    public ConsumerFactory<Interval, ProcessedIntervalSubscriptions> consumerFactoryProcessedIntervalSubscriptions() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
 
@@ -56,9 +59,33 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<Interval, ProcessedIntervalSubscriptions> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<Interval, ProcessedIntervalSubscriptions> kafkaListenerContainerFactoryProcessedIntervalSubscriptions() {
         ConcurrentKafkaListenerContainerFactory<Interval, ProcessedIntervalSubscriptions> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactoryProcessedIntervalSubscriptions());
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, Subscription> consumerFactoryMetricCount() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
+
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+
+        config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
+
+        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.orioninc.models.Subscription");
+
+        config.put(ErrorHandlingDeserializer.VALUE_FUNCTION, FailedMetricCountDeserializationProvider.class);
+
+        return new DefaultKafkaConsumerFactory<>(config);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Subscription> kafkaListenerContainerFactoryMetricCount() {
+        ConcurrentKafkaListenerContainerFactory<String, Subscription> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryMetricCount());
         return factory;
     }
 

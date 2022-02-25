@@ -2,36 +2,65 @@ package com.orioninc.services;
 
 import com.orioninc.models.User;
 import com.orioninc.models.Subscription;
+import com.orioninc.properties.ApplicationProperties;
+import org.apache.kafka.common.protocol.types.Field;
+import org.joda.time.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.*;
 
+
 @Service
 public class SubscriptionsSchedulingService {
-    @Autowired
-    private IntervalSubscriptionsProcessingService intervalSubscriptionsProcessingService;
+    private final IntervalSubscriptionsProcessingService intervalSubscriptionsProcessingService;
+    private final ApplicationProperties applicationProperties;
 
-    private Map<User, List<Subscription>> usersEvents = Collections.synchronizedMap(new HashMap<>());
+    private final Map<User, List<Subscription>> usersEvents = Collections.synchronizedMap(new HashMap<>());
 
-    private long startIntervalTimestamp = 0;
+    private final LocalTime from;
+    private final LocalTime to;
+    private final int intervalMinutes;
 
-    @Scheduled(cron = "${app.users-process-interval}")
+    public SubscriptionsSchedulingService(IntervalSubscriptionsProcessingService intervalSubscriptionsProcessingService, ApplicationProperties applicationProperties) {
+        this.intervalSubscriptionsProcessingService = intervalSubscriptionsProcessingService;
+        this.applicationProperties = applicationProperties;
+
+        this.intervalMinutes = Integer.parseInt(applicationProperties.getUsersProcessIntervalMinutes());
+
+        String[] fromToProperty = applicationProperties.getUsersProcessIntervalFromTo().split("-");
+
+        this.from = new LocalTime(Integer.parseInt(fromToProperty[0].split(":")[0]),
+                Integer.parseInt(fromToProperty[0].split(":")[1]));
+        this.to = new LocalTime(Integer.parseInt(fromToProperty[1].split(":")[0]),
+                Integer.parseInt(fromToProperty[1].split(":")[1]));
+    }
+
+    private long intervalStartTimestamp = 0;
     public void interval() {
-        if(startIntervalTimestamp == 0) {
-            startIntervalTimestamp = System.currentTimeMillis();
+        long intervalEndTimestamp = System.currentTimeMillis();
+
+        if(intervalStartTimestamp == 0) {
+            intervalStartTimestamp = System.currentTimeMillis();
             return;
+        } else {
+            Duration duration = new Duration(intervalStartTimestamp, intervalEndTimestamp);
+            if(duration.getStandardMinutes() > intervalMinutes) {
+                intervalStartTimestamp = System.currentTimeMillis();
+                return;
+            }
         }
 
-        long endIntervalTimestamp = System.currentTimeMillis();
+        intervalSubscriptionsProcessingService.process(usersEvents, intervalStartTimestamp, intervalEndTimestamp);
+        usersEvents.clear();
 
-        //intervalSubscriptionsProcessingService.process(usersEvents, startIntervalTimestamp, endIntervalTimestamp);
-        //usersEvents.clear();
-        System.out.println(new Timestamp(startIntervalTimestamp).toString() + "         " + new Timestamp(endIntervalTimestamp).toString());
-
-        startIntervalTimestamp = 0;
+        intervalStartTimestamp = intervalEndTimestamp;
     }
 
     public void process(User user, Subscription subscription) {
@@ -42,5 +71,36 @@ public class SubscriptionsSchedulingService {
         } else {
             usersEvents.get(user).add(subscription);
         }
+    }
+
+    public Date getNextExecutionDate(Date lastCompletionTime) {
+        LocalTime nextExecution;
+
+        if(lastCompletionTime == null) {
+            if(LocalTime.now().isBefore(from)) {
+                nextExecution = from;
+            } else if(LocalTime.now().isAfter(from) && LocalTime.now().isBefore(to)) {
+                interval();
+                nextExecution = from;
+                while(LocalTime.now().isAfter(nextExecution)) {
+                    nextExecution = nextExecution.plusMinutes(intervalMinutes);
+                }
+            } else {
+                return from.toDateTimeToday().plusDays(1).toDate();
+            }
+
+            return nextExecution.toDateTimeToday().toDate();
+        }
+
+        nextExecution = LocalTime.fromDateFields(lastCompletionTime).plusMinutes(intervalMinutes);
+        if(nextExecution.isAfter(to)) {
+            if(LocalTime.now().isBefore(to)) {
+                nextExecution = to;
+            } else {
+                return from.toDateTimeToday().plusDays(1).toDate();
+            }
+        }
+
+        return nextExecution.toDateTimeToday().toDate();
     }
 }

@@ -18,7 +18,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 public class SendService {
     private final KafkaTemplate<User, Subscription> kafkaTemplateSubscription;
     private final KafkaTemplate<Interval, ProcessedIntervalSubscriptions> kafkaTemplateProcessedIntervalSubscriptions;
-    private final KafkaTemplate<Integer, Subscription> kafkaTemplateMetricCount;
+    private final KafkaTemplate<String, Subscription> kafkaTemplateMetricCount;
 
     private static final Logger logger = Logger.getLogger(SendService.class);
 
@@ -57,7 +57,7 @@ public class SendService {
     }
 
     public void sentToMetricCountTopic(Subscription subscription, int subscriptionsCount) {
-        ListenableFuture<SendResult<Integer, Subscription>> listenableFuture = kafkaTemplateMetricCount.sendDefault(subscriptionsCount, subscription);
+        ListenableFuture<SendResult<String, Subscription>> listenableFuture = kafkaTemplateMetricCount.sendDefault(Integer.toString(subscriptionsCount), subscription);
 
         listenableFuture.addCallback(new ListenableFutureCallback<>() {
             @Override
@@ -66,7 +66,7 @@ public class SendService {
             }
 
             @Override
-            public void onSuccess(SendResult<Integer, Subscription> result) {
+            public void onSuccess(SendResult<String, Subscription> result) {
                 logger.info("Success sent to metric count topic");
             }
         });

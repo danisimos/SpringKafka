@@ -36,7 +36,6 @@ import java.util.Map;
 @ComponentScan(basePackages = "com.orioninc")
 @EnableKafka
 @PropertySource("classpath:application.properties")
-@EnableScheduling
 public class ApplicationConfig {
     @Autowired
     KafkaProperties kafkaProperties;
@@ -140,7 +139,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ProducerFactory<Integer, Subscription> producerFactoryMetricCount() {
+    public ProducerFactory<String, Subscription> producerFactoryMetricCount() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
@@ -150,8 +149,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public KafkaTemplate<Integer, Subscription> kafkaTemplateMetricCount() {
-        KafkaTemplate<Integer, Subscription> kafkaTemplate = new KafkaTemplate<>(producerFactoryMetricCount());
+    public KafkaTemplate<String, Subscription> kafkaTemplateMetricCount() {
+        KafkaTemplate<String, Subscription> kafkaTemplate = new KafkaTemplate<>(producerFactoryMetricCount());
         kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getMetricCountTopic());
 
         return kafkaTemplate;
