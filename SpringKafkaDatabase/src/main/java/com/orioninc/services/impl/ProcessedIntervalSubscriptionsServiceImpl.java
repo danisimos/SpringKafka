@@ -1,11 +1,9 @@
 package com.orioninc.services.impl;
 
 import com.orioninc.models.ProcessedIntervalSubscriptions;
-import com.orioninc.models.User;
 import com.orioninc.repositories.ProcessedIntervalSubscriptionsRepository;
 import com.orioninc.repositories.UsersRepository;
 import com.orioninc.services.ProcessedIntervalSubscriptionsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

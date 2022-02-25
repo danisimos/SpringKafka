@@ -3,9 +3,9 @@ package com.orioninc.config;
 import com.orioninc.exceptions.FailedSubscriptionDeserializationProvider;
 import com.orioninc.exceptions.FailedUserDeserializationProvider;
 import com.orioninc.models.Interval;
+import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.models.Subscription;
 import com.orioninc.models.User;
-import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.properties.KafkaProperties;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -23,7 +23,6 @@ import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -44,7 +43,7 @@ public class ApplicationConfig {
     public NewTopic subscriptionsTopic() {
         return TopicBuilder.name(kafkaProperties.getTopics().getSubscriptionsTopic())
                 .partitions(3)
-                .replicas(1)
+                .replicas(3)
                 .build();
     }
 
@@ -52,7 +51,7 @@ public class ApplicationConfig {
     public NewTopic intervalsTopic() {
         return TopicBuilder.name(kafkaProperties.getTopics().getIntervalsTopic())
                 .partitions(3)
-                .replicas(1)
+                .replicas(3)
                 .build();
     }
 
@@ -60,7 +59,7 @@ public class ApplicationConfig {
     public NewTopic metricCountTopic() {
         return TopicBuilder.name(kafkaProperties.getTopics().getMetricCountTopic())
                 .partitions(3)
-                .replicas(1)
+                .replicas(3)
                 .build();
     }
 

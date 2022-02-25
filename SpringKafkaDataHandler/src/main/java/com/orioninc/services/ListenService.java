@@ -1,10 +1,9 @@
 package com.orioninc.services;
 
-import com.orioninc.models.User;
 import com.orioninc.models.Subscription;
+import com.orioninc.models.User;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;

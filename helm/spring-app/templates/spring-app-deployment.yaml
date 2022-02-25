@@ -22,6 +22,6 @@ spec:
               value: {{ .Values.kafka.topics.second }}
             - name: APP_USERS_PROCESS_INTERVAL
               value: {{ .Values.app.users_process_interval }}
-          image: daniilkorotaev/spring-kafka-try-out:46.0
+          image: daniilkorotaev/spring-kafka-try-out:47.0
           ports:
             - containerPort: 8080

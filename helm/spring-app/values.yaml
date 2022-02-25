@@ -28,4 +28,5 @@ kafka:
     metric_count_topic: metricCountTopic
 
 app:
-  users_process_interval: "0/30 * 8-21 * * ?"
+  users_process_interval_minutes: 1
+  users_process_interval_from_to: "21:34-21:39"

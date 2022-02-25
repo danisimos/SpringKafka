@@ -5,7 +5,6 @@ import com.orioninc.repositories.SubscriptionsRepository;
 import com.orioninc.repositories.UsersRepository;
 import com.orioninc.services.SubscriptionsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor

@@ -1,19 +1,12 @@
 package com.orioninc.repositories.impl;
 
-import com.orioninc.models.Interval;
-import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.models.User;
 import com.orioninc.repositories.UsersRepository;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.util.HashMap;

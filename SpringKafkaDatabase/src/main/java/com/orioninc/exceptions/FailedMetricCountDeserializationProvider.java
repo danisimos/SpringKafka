@@ -1,6 +1,5 @@
 package com.orioninc.exceptions;
 
-import com.orioninc.models.Interval;
 import com.orioninc.models.Subscription;
 import org.springframework.kafka.support.serializer.FailedDeserializationInfo;
 

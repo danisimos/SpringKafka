@@ -1,19 +1,12 @@
 package com.orioninc.services;
 
-import com.orioninc.models.User;
 import com.orioninc.models.Subscription;
+import com.orioninc.models.User;
 import com.orioninc.properties.ApplicationProperties;
-import org.apache.kafka.common.protocol.types.Field;
-import org.joda.time.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.Trigger;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.support.CronTrigger;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 
