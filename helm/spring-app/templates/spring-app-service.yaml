@@ -9,7 +9,6 @@ spec:
     - port: 8080
       name: {{ .Release.Name }}-port
       protocol: TCP
-      targetPort: 8080
       nodePort: 30080
   type: NodePort
   selector:

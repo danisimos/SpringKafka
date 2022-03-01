@@ -4,19 +4,18 @@ import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.repositories.ProcessedIntervalSubscriptionsRepository;
 import com.orioninc.repositories.UsersRepository;
 import com.orioninc.services.ProcessedIntervalSubscriptionsService;
+import com.orioninc.utils.PsqlTimestampDateFormatter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProcessedIntervalSubscriptionsServiceImpl implements ProcessedIntervalSubscriptionsService {
-    ProcessedIntervalSubscriptionsRepository processedIntervalDataRepository;
-    UsersRepository usersRepository;
-
-    public ProcessedIntervalSubscriptionsServiceImpl(ProcessedIntervalSubscriptionsRepository processedIntervalDataRepository, UsersRepository usersRepository) {
-        this.processedIntervalDataRepository = processedIntervalDataRepository;
-        this.usersRepository = usersRepository;
-    }
+    private final ProcessedIntervalSubscriptionsRepository processedIntervalDataRepository;
+    private final UsersRepository usersRepository;
 
     @Override
     public ProcessedIntervalSubscriptions saveProcessedIntervalSubscriptions(ProcessedIntervalSubscriptions data) {
@@ -28,5 +27,10 @@ public class ProcessedIntervalSubscriptionsServiceImpl implements ProcessedInter
     @Override
     public List<ProcessedIntervalSubscriptions> getAllProcessedIntervalsSubscriptions() {
         return processedIntervalDataRepository.findAll();
+    }
+
+    @Override
+    public List<ProcessedIntervalSubscriptions> getByInterval(String from, String to)  {
+        return processedIntervalDataRepository.findByInterval(from, to);
     }
 }

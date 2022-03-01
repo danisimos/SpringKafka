@@ -1,4 +1,4 @@
-package com.orioninc.services;
+package com.orioninc.services.impl;
 
 import com.orioninc.models.Subscription;
 import com.orioninc.models.User;
@@ -17,8 +17,6 @@ public class SubscriptionsSchedulingService {
 
     private final Map<User, List<Subscription>> usersEvents = Collections.synchronizedMap(new HashMap<>());
 
-    private final LocalTime from;
-    private final LocalTime to;
     private final int intervalMinutes;
 
     public SubscriptionsSchedulingService(IntervalSubscriptionsProcessingService intervalSubscriptionsProcessingService, ApplicationProperties applicationProperties) {
@@ -26,13 +24,6 @@ public class SubscriptionsSchedulingService {
         this.applicationProperties = applicationProperties;
 
         this.intervalMinutes = Integer.parseInt(applicationProperties.getUsersProcessIntervalMinutes());
-
-        String[] fromToProperty = applicationProperties.getUsersProcessIntervalFromTo().split("-");
-
-        this.from = new LocalTime(Integer.parseInt(fromToProperty[0].split(":")[0]),
-                Integer.parseInt(fromToProperty[0].split(":")[1]));
-        this.to = new LocalTime(Integer.parseInt(fromToProperty[1].split(":")[0]),
-                Integer.parseInt(fromToProperty[1].split(":")[1]));
     }
 
     private long intervalStartTimestamp = 0;
@@ -42,12 +33,6 @@ public class SubscriptionsSchedulingService {
         if(intervalStartTimestamp == 0) {
             intervalStartTimestamp = System.currentTimeMillis();
             return;
-        } else {
-            Duration duration = new Duration(intervalStartTimestamp, intervalEndTimestamp);
-            if(duration.getStandardMinutes() > intervalMinutes) {
-                intervalStartTimestamp = System.currentTimeMillis();
-                return;
-            }
         }
 
         intervalSubscriptionsProcessingService.process(usersEvents, intervalStartTimestamp, intervalEndTimestamp);
@@ -70,29 +55,16 @@ public class SubscriptionsSchedulingService {
         LocalTime nextExecution;
 
         if(lastCompletionTime == null) {
-            if(LocalTime.now().isBefore(from)) {
-                nextExecution = from;
-            } else if(LocalTime.now().isAfter(from) && LocalTime.now().isBefore(to)) {
-                interval();
-                nextExecution = from;
-                while(LocalTime.now().isAfter(nextExecution)) {
-                    nextExecution = nextExecution.plusMinutes(intervalMinutes);
-                }
-            } else {
-                return from.toDateTimeToday().plusDays(1).toDate();
+            interval();
+            nextExecution = new LocalTime(LocalTime.now().getHourOfDay(), 0);
+            while(LocalTime.now().isAfter(nextExecution)) {
+                nextExecution = nextExecution.plusMinutes(intervalMinutes);
             }
 
             return nextExecution.toDateTimeToday().toDate();
         }
 
         nextExecution = LocalTime.fromDateFields(lastCompletionTime).plusMinutes(intervalMinutes);
-        if(nextExecution.isAfter(to)) {
-            if(LocalTime.now().isBefore(to)) {
-                nextExecution = to;
-            } else {
-                return from.toDateTimeToday().plusDays(1).toDate();
-            }
-        }
 
         return nextExecution.toDateTimeToday().toDate();
     }

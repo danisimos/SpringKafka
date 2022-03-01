@@ -1,5 +1,6 @@
 package com.orioninc.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orioninc.exceptions.FailedIntervalDeserializationProvider;
 import com.orioninc.exceptions.FailedMetricCountDeserializationProvider;
 import com.orioninc.exceptions.FailedProcessedIntervalSubscriptionsDeserializationProvider;
@@ -99,5 +100,10 @@ public class ApplicationConfig {
         dataSource.setPassword(dbProperties.getPassword());
 
         return dataSource;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }

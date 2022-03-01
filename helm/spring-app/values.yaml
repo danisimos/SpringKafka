@@ -29,4 +29,3 @@ kafka:
 
 app:
   users_process_interval_minutes: 1
-  users_process_interval_from_to: "21:34-21:39"

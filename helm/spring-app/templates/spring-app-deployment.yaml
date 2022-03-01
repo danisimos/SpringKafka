@@ -16,12 +16,14 @@ spec:
           env:
             - name: KAFKA_SERVER
               value: {{ .Release.Name }}-cp-kafka-0.{{ .Release.Name }}-cp-kafka-headless.default:9092
-            - name: KAFKA_TOPICS_FIRST
-              value: {{ .Values.kafka.topics.first }}
-            - name: KAFKA_TOPICS_SECOND
-              value: {{ .Values.kafka.topics.second }}
-            - name: APP_USERS_PROCESS_INTERVAL
-              value: {{ .Values.app.users_process_interval }}
-          image: daniilkorotaev/spring-kafka-try-out:47.0
+            - name: KAFKA_TOPICS_SUBSCRIPTIONS_TOPIC
+              value: {{ .Values.kafka.topics.subscriptions_topic }}
+            - name: KAFKA_TOPICS_INTERVALS_TOPIC
+              value: {{ .Values.kafka.topics.intervals_topic }}
+            - name: KAFKA_TOPICS_METRIC_COUNT_TOPIC
+              value: {{ .Values.kafka.topics.metric_count_topic }}
+            - name: APP_USERS_PROCESS_INTERVAL_MINUTES
+              value: {{ .Values.app.users_process_interval_minutes | quote }}
+          image: daniilkorotaev/spring-kafka-try-out:51.0
           ports:
             - containerPort: 8080

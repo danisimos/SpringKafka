@@ -37,7 +37,11 @@ public class TopicListenerImpl implements TopicListener {
     @KafkaListener(topics = "${kafka.topics.metric_count_topic}",
             groupId = "group2",
             containerFactory = "kafkaListenerContainerFactoryMetricCount")
-    public void listenMetricCount(@Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String count, Subscription subscription) {
+    public void listenMetricCount(@Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String count,
+                                  @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName,
+                                  Subscription subscription) {
         subscriptionsService.saveSubscription(subscription);
+
+        logger.info("Received from: " + topicName + " " + count + " " + subscription);
     }
 }

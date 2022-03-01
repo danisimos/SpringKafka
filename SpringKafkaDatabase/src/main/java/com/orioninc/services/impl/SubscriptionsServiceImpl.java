@@ -16,6 +16,7 @@ public class SubscriptionsServiceImpl implements SubscriptionsService {
     @Override
     public Subscription saveSubscription(Subscription subscription) {
         usersRepository.save(subscription.getUser());
+        System.out.println("subservice: userid" + subscription.getUser());
 
         return subscriptionsRepository.save(subscription);
     }

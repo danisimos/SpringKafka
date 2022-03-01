@@ -1,4 +1,4 @@
-package com.orioninc.services;
+package com.orioninc.services.impl;
 
 import com.orioninc.models.Interval;
 import com.orioninc.models.ProcessedIntervalSubscriptions;

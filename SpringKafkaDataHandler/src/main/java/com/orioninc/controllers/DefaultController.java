@@ -3,22 +3,23 @@ package com.orioninc.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orioninc.exceptions.ValidationException;
 import com.orioninc.models.Subscription;
-import com.orioninc.services.MetricsCountService;
-import com.orioninc.services.SendService;
 import com.orioninc.services.ValidationService;
+import com.orioninc.services.impl.MetricsCountService;
+import com.orioninc.services.impl.SendService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
+@RequestMapping("/")
 @Api("default Controller")
 public class DefaultController {
     private final SendService sendService;
@@ -27,22 +28,32 @@ public class DefaultController {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    @PostMapping(value = "/")
-    @ApiOperation(value = "process user's subscription event", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String index(@RequestBody(required = false) Subscription subscription) {
+    @GetMapping("subscriptions")
+    public String getSubscriptionsPage() {
+        return "subscriptions";
+    }
+
+    @GetMapping("intervals")
+    public String getIntervalsPage() {
+        return "intervals";
+    }
+
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> index(@RequestBody(required = false) Subscription subscription) {
+        System.out.println(subscription);
         validationService.validate(subscription);
 
-        return sendService.sendToSubscriptionsTopic(subscription) + ", count: " + metricsCountService.getCount();
+        sendService.sendToSubscriptionsTopic(subscription);
+        return new ResponseEntity<>("Successful", HttpStatus.OK);
     }
 
     @ExceptionHandler(ValidationException.class)
-    public String validationException(ValidationException exception) {
-        return exception.getMessage();
+    public ResponseEntity<String> validationException(ValidationException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public String notReadableException(HttpMessageNotReadableException exception) {
-        System.out.println(exception.getMessage());
-        return "Json parsing error";
+    public ResponseEntity<String> notReadableException(HttpMessageNotReadableException exception) {
+        return new ResponseEntity<>("Json parsing error", HttpStatus.BAD_REQUEST);
     }
 }

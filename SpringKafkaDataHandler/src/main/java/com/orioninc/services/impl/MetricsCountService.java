@@ -1,4 +1,4 @@
-package com.orioninc.services;
+package com.orioninc.services.impl;
 
 import com.orioninc.models.Subscription;
 import com.orioninc.models.User;
@@ -12,7 +12,7 @@ public class MetricsCountService {
     private final SendService sendService;
 
     private static final Logger logger = Logger.getLogger(MetricsCountService.class);
-    private int subscriptionsCount = 0;
+    private int subscriptionsCount = 1;
 
     public void process(User user, Subscription subscription) {
         subscriptionsCount++;

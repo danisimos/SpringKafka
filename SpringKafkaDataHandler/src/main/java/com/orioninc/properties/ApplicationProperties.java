@@ -9,5 +9,4 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class ApplicationProperties {
     private String usersProcessIntervalMinutes;
-    private String usersProcessIntervalFromTo;
 }

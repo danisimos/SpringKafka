@@ -7,7 +7,9 @@ metadata:
 spec:
   ports:
     - port: 8080
-      name: {{ .Release.Name }}-database-port
+      name: {{ .Release.Name }}-port-database-service
       protocol: TCP
+      nodePort: 30081
+  type: NodePort
   selector:
-    app: {{ .Release.Name }}-database
+    app: {{ .Release.Name }}-database-service

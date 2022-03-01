@@ -1,6 +1,6 @@
 package com.orioninc.config;
 
-import com.orioninc.services.SubscriptionsSchedulingService;
+import com.orioninc.services.impl.SubscriptionsSchedulingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
