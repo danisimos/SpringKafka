@@ -8,18 +8,14 @@
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    function addSubscription(firstName, lastName, age, subscriptionType, weekCount) {
-        let body = {
-            "from": from,
-            "to": to
-        };
+    function getIntervals(from, to) {
         $.ajax("http://localhost:30081", {
             method: "GET",
-            data: JSON.stringify(body),
-            dataType: 'json',
-            headers: {
-                'Content-Type': 'application/json'
+            data: {
+                from: from,
+                to: to
             },
+
             success: function(data, textStatus, jqXHR) {
                 document.getElementById('messageContainer').innerText = data.toString();
             },

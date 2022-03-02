@@ -23,11 +23,11 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
 
     private static final String SQL_INSERT_INTO = "insert into processed_interval_subscriptions(timestamp_from, timestamp_to, average_week_count, user_id) values (:from, :to, :averageWeekCount, :userId)";
     private static final String SQL_SELECT_ALL = "select * from processed_interval_subscriptions";
-    private static final String SQL_SELECT_BY_INTERVAL = "select p.timestamp_from as \"timestamp_from\", p.timestamp_to as \"timestamp_to\",\n" +
-            "       u.id as \"user_id\", u.first_name as \"first_name\", u.last_name as \"last_name\",\n" +
-            "       u.age as \"age\", p.average_week_count as \"average_week_count\"\n" +
-            "from processed_interval_subscriptions p left join users u on u.id = p.user_id\n" +
-            "where p.timestamp_from >= '2022-03-01 17:31:00' and '2022-03-01 17:31:00' <= p.timestamp_to";
+    private static final String SQL_SELECT_BY_INTERVAL = "select p.timestamp_from as \"timestamp_from\", p.timestamp_to as \"timestamp_to\"," +
+            "u.id as \"user_id\", u.first_name as \"first_name\", u.last_name as \"last_name\"," +
+            "u.age as \"age\", p.average_week_count as \"average_week_count\" " +
+            "from processed_interval_subscriptions p left join users u on u.id = p.user_id " +
+            "where p.timestamp_from >= :from and :to <= p.timestamp_to";
 
     private final RowMapper<ProcessedIntervalSubscriptions> processedIntervalSubscriptionsRowMapperRowMapper = (row, rowNumber) -> ProcessedIntervalSubscriptions.builder()
             .interval(Interval.builder()
@@ -92,6 +92,13 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
 
     @Override
     public List<ProcessedIntervalSubscriptions> findByInterval(String from, String to) {
-        return jdbcTemplate.query(SQL_SELECT_BY_INTERVAL, processedIntervalSubscriptionsRowMapperRowMapper);
+        Map<String, Object> values = new HashMap<>();
+
+        values.put("from", from);
+        values.put("to", to);
+
+        SqlParameterSource parameterSource = new MapSqlParameterSource(values);
+
+        return jdbcTemplate.query(SQL_SELECT_BY_INTERVAL, parameterSource, processedIntervalSubscriptionsRowMapperRowMapper);
     }
 }

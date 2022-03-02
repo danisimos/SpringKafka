@@ -12,25 +12,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.*;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class IntervalsController {
     private final ProcessedIntervalSubscriptionsService processedIntervalSubscriptionsService;
     private final ObjectMapper objectMapper;
     private final PsqlTimestampDateFormatter psqlTimestampDateFormatter;
 
-    @GetMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ProcessedIntervalSubscriptions>> index(@RequestBody(required = false) String json) throws JsonProcessingException, ParseException {
-        JsonNode jsonNode = objectMapper.readTree(json);
-        String from = psqlTimestampDateFormatter.format(jsonNode.get("from").asText());
-        String to = psqlTimestampDateFormatter.format(jsonNode.get("to").asText());
+    @GetMapping(value = "/")
+    public ResponseEntity<String> index(@RequestParam("from") String from, @RequestParam("to") String to) throws JsonProcessingException, ParseException {
+        //String from = psqlTimestampDateFormatter.format(from);
+        //String to = psqlTimestampDateFormatter.format(to);
 
-        return new ResponseEntity<List<ProcessedIntervalSubscriptions>>(processedIntervalSubscriptionsService.getByInterval(from, to), HttpStatus.OK);
+
+        return new ResponseEntity<>(from + to, HttpStatus.OK);
     }
 
     @ExceptionHandler

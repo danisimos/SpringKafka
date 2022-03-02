@@ -1,9 +1,12 @@
 package com.orioninc.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+@Component
 public class PsqlTimestampDateFormatter {
     public String format(String timestamp) throws ParseException {
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
