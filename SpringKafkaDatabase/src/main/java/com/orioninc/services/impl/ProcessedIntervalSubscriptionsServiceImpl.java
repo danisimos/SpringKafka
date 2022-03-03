@@ -1,6 +1,7 @@
 package com.orioninc.services.impl;
 
 import com.orioninc.models.ProcessedIntervalSubscriptions;
+import com.orioninc.models.User;
 import com.orioninc.repositories.ProcessedIntervalSubscriptionsRepository;
 import com.orioninc.repositories.UsersRepository;
 import com.orioninc.services.ProcessedIntervalSubscriptionsService;
@@ -32,5 +33,10 @@ public class ProcessedIntervalSubscriptionsServiceImpl implements ProcessedInter
     @Override
     public List<ProcessedIntervalSubscriptions> getByInterval(String from, String to)  {
         return processedIntervalDataRepository.findByInterval(from, to);
+    }
+
+    @Override
+    public List<ProcessedIntervalSubscriptions> getByUser(User user) {
+        return processedIntervalDataRepository.findByUser(user);
     }
 }

@@ -8,16 +8,17 @@
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    function getIntervals(from, to) {
-        $.ajax("http://localhost:8081/intervals", {
+    function getByUser(id, firstName, lastName, age) {
+        $.ajax("http://localhost:8081/users", {
             method: "GET",
             data: {
-                from: from,
-                to: to
+                id: id,
+                firstName: firstName,
+                lastName: lastName,
+                age: parseInt(age) || 0
             },
-
             success: function(data, textStatus, jqXHR) {
-                document.getElementById('userContainer').innerText = new Date(1646236080139);
+                document.getElementById('userContainer').innerText = data.toString();
                 document.getElementById('subContainer').innerText = data.toString();
             },
             error: function(jqXHR, textStatus, errorThrown ) {
@@ -35,15 +36,19 @@
             <div class="text-center">
                 <form name="myForm" id="myForm">
                     <div class="form-group">
-                        <label>Intervals Information</label>
-                        <input type="datetime-local" class="form-control" id="from" placeholder="Enter your from">
-                        <input type="datetime-local" class="form-control" id="to" placeholder="Enter your to">
+                        <label>User Information</label>
+                        <input type="number" min="1" class="form-control", id="id", placeholder="Enter user id">
+                        <input type="text" class="form-control" id="firstName" placeholder="Enter first name">
+                        <input type="text" class="form-control" id="lastName" placeholder="Enter last name">
+                        <input type="number" min="18" max="100" class="form-control" id="age" placeholder="Enter age">
                     </div>
                 </form>
 
-                    <button class="btn btn-primary" onclick="getIntervals(
-                        document.getElementById('from').value,
-                        document.getElementById('to').value
+                    <button class="btn btn-primary" onclick="getByUser(
+                        document.getElementById('id').value,
+                        document.getElementById('firstName').value,
+                        document.getElementById('lastName').value,
+                        document.getElementById('age').value
                     )">Result</button>
 
                     <br>
@@ -51,7 +56,6 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" id="userContainer"></div>
                     <div class="panel-body" id="subContainer"></div>
-                </div>
                 </div>
         </div>
     </div>

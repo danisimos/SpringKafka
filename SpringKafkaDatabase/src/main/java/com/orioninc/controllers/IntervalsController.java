@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.models.Subscription;
+import com.orioninc.models.User;
 import com.orioninc.services.ProcessedIntervalSubscriptionsService;
 import com.orioninc.utils.PsqlTimestampDateFormatter;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +26,17 @@ public class IntervalsController {
     private final ObjectMapper objectMapper;
     private final PsqlTimestampDateFormatter psqlTimestampDateFormatter;
 
-    @GetMapping(value = "/")
-    public ResponseEntity<String> index(@RequestParam("from") String from, @RequestParam("to") String to) throws JsonProcessingException, ParseException {
-        //String from = psqlTimestampDateFormatter.format(from);
-        //String to = psqlTimestampDateFormatter.format(to);
+    @GetMapping(value = "/intervals")
+    public ResponseEntity<List<ProcessedIntervalSubscriptions>> getIntervals(@RequestParam("from") String from,
+                                                                      @RequestParam("to") String to) throws ParseException {
+        return new ResponseEntity<>(processedIntervalSubscriptionsService
+                .getByInterval(psqlTimestampDateFormatter.format(from), psqlTimestampDateFormatter.format(to)), HttpStatus.OK);
+    }
 
-
-        return new ResponseEntity<>(from + to, HttpStatus.OK);
+    @GetMapping(value = "/users")
+    public ResponseEntity<List<ProcessedIntervalSubscriptions>> getByUser(User user) {
+        System.out.println(user);
+        return new ResponseEntity<>(processedIntervalSubscriptionsService.getByUser(user), HttpStatus.OK);
     }
 
     @ExceptionHandler

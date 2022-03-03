@@ -38,7 +38,12 @@ public class DefaultController {
         return "intervals";
     }
 
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("users")
+    public String getUsersPage() {
+        return "users";
+    }
+
+    @PostMapping(value = "/subscriptions", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> index(@RequestBody(required = false) Subscription subscription) {
         System.out.println(subscription);
         validationService.validate(subscription);

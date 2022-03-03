@@ -7,6 +7,7 @@ import com.orioninc.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class IntervalSubscriptionsProcessingService {
     SendService sendService;
 
     public void process(Map<User, List<Subscription>> usersEvents, long timestampFrom, long timestampTo) {
-        Interval interval = new Interval(timestampFrom, timestampTo);
+        Interval interval = new Interval(new Timestamp(timestampFrom), new Timestamp(timestampTo));
 
         usersEvents
                 .entrySet()

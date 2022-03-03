@@ -27,12 +27,18 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
             "u.id as \"user_id\", u.first_name as \"first_name\", u.last_name as \"last_name\"," +
             "u.age as \"age\", p.average_week_count as \"average_week_count\" " +
             "from processed_interval_subscriptions p left join users u on u.id = p.user_id " +
-            "where p.timestamp_from >= :from and :to <= p.timestamp_to";
+            "where cast(p.timestamp_from as text) >= cast(':from' as text) and cast(':to' as text) <= cast(p.timestamp_to as text)";
+    private static final String SQL_SELECT_LIKE_USER = "select p.timestamp_from as \"timestamp_from\", p.timestamp_to as \"timestamp_to\"," +
+            "u.id as \"user_id\", u.first_name as \"first_name\", u.last_name as \"last_name\"," +
+            "u.age as \"age\", p.average_week_count as \"average_week_count\" " +
+            "from processed_interval_subscriptions p left join users u on u.id = p.user_id " +
+            "where cast(u.id as text) like ':id' or (u.\"first_name\" like ':firstName' " +
+            "and u.\"last_name\" like ':lastName' and cast(u.age as text) like ':age')";
 
     private final RowMapper<ProcessedIntervalSubscriptions> processedIntervalSubscriptionsRowMapperRowMapper = (row, rowNumber) -> ProcessedIntervalSubscriptions.builder()
             .interval(Interval.builder()
-                    .timestampFrom(row.getLong("timestamp_from"))
-                    .timestampTo(row.getLong("timestamp_to"))
+                    .timestampFromg(row.getTimestamp("timestamp_from"))
+                    .timestampTo(row.getTimestamp("timestamp_to"))
                     .build())
             .user(User.builder()
                     .firstName(row.getString("first_name"))
@@ -55,11 +61,9 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
     @Override
     public ProcessedIntervalSubscriptions save(ProcessedIntervalSubscriptions subscriptions) {
         Map<String, Object> values = new HashMap<>();
-        Timestamp from = new Timestamp(subscriptions.getInterval().getTimestampFrom());
-        Timestamp to = new Timestamp(subscriptions.getInterval().getTimestampTo());
 
-        values.put("from", from);
-        values.put("to", to);
+        values.put("from", subscriptions.getInterval().getTimestampFromg());
+        values.put("to", subscriptions.getInterval().getTimestampTo());
         values.put("averageWeekCount", subscriptions.getAverageWeekCount());
         values.put("userId", subscriptions.getUser().getId());
 
@@ -93,6 +97,7 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
     @Override
     public List<ProcessedIntervalSubscriptions> findByInterval(String from, String to) {
         Map<String, Object> values = new HashMap<>();
+        System.out.println(from);
 
         values.put("from", from);
         values.put("to", to);
@@ -100,5 +105,19 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
         SqlParameterSource parameterSource = new MapSqlParameterSource(values);
 
         return jdbcTemplate.query(SQL_SELECT_BY_INTERVAL, parameterSource, processedIntervalSubscriptionsRowMapperRowMapper);
+    }
+
+    @Override
+    public List<ProcessedIntervalSubscriptions> findByUser(User user) {
+        Map<String, Object> values = new HashMap<>();
+        //System.out.println(user.getId().toString());
+        values.put("id", user.getId() == null ? "%": user.getId().toString());
+        values.put("firstName", user.getFirstName() == null ? "%": "%" + user.getFirstName() + "%");
+        values.put("lastName", user.getLastName() == null ? "%": "%" + user.getLastName() + "%");
+        values.put("age", user.getAge() == 0 ? "%": Integer.toString(user.getAge()));
+
+        SqlParameterSource parameterSource = new MapSqlParameterSource(values);
+
+        return jdbcTemplate.query(SQL_SELECT_LIKE_USER, parameterSource, processedIntervalSubscriptionsRowMapperRowMapper);
     }
 }

@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Interval {
-    private long timestampFrom;
-    private long timestampTo;
+    private Timestamp timestampFrom;
+    private Timestamp timestampTo;
 }
