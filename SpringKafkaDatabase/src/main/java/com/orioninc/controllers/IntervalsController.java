@@ -23,20 +23,13 @@ import java.util.*;
 @RequiredArgsConstructor
 public class IntervalsController {
     private final ProcessedIntervalSubscriptionsService processedIntervalSubscriptionsService;
-    private final ObjectMapper objectMapper;
     private final PsqlTimestampDateFormatter psqlTimestampDateFormatter;
 
     @GetMapping(value = "/intervals")
     public ResponseEntity<List<ProcessedIntervalSubscriptions>> getIntervals(@RequestParam("from") String from,
                                                                       @RequestParam("to") String to) throws ParseException {
         return new ResponseEntity<>(processedIntervalSubscriptionsService
-                .getByInterval(psqlTimestampDateFormatter.format(from), psqlTimestampDateFormatter.format(to)), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/users")
-    public ResponseEntity<List<ProcessedIntervalSubscriptions>> getByUser(User user) {
-        System.out.println(user);
-        return new ResponseEntity<>(processedIntervalSubscriptionsService.getByUser(user), HttpStatus.OK);
+                .getByInterval(psqlTimestampDateFormatter.formatFrom(from), psqlTimestampDateFormatter.formatTo(to)), HttpStatus.OK);
     }
 
     @ExceptionHandler

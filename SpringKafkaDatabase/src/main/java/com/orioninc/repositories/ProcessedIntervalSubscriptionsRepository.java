@@ -9,4 +9,5 @@ public interface ProcessedIntervalSubscriptionsRepository extends CrudRepository
     List<ProcessedIntervalSubscriptions> findByAverageWeekCount(int averageWeekCount);
     List<ProcessedIntervalSubscriptions> findByInterval(String from, String to);
     List<ProcessedIntervalSubscriptions> findByUser(User user);
+    List<ProcessedIntervalSubscriptions> findByUserId(Integer id);
 }

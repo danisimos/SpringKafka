@@ -1,0 +1,116 @@
+openapi: 3.0.3
+info:
+  title: "Spring Kafka User Events DataBase"
+  description: "Spring Kafka User Events DataBase"
+  version: 1.0.0
+servers:
+  - url: "http://localhost:30081"
+    description: This is server for spring kafka database api
+
+tags:
+  - name: "Intervals"
+  - name: "Users"
+
+paths:
+  /intervals/from={from}&to={to}:
+    parameters:
+      - name: from
+        description: timestamp of from of interval
+        schema:
+          type: string
+        in: path
+        required: true
+      - name: to
+        description: timestamp of to of interval
+        schema:
+          type: string
+        in: path
+        required: true
+
+    get:
+      summary: This gets all intervals by given interval
+      tags:
+        - "Intervals"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+        400:
+          description: BAD REQUEST
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "parse timestamp error"
+  /users/:
+    get:
+      summary: get all processed intervals subscriptions by user information
+      tags:
+        - "Users"
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+  /users/{id}:
+    parameters:
+      - name: id
+        description: timestamp of from of interval
+        schema:
+          type: integer
+        in: path
+        required: true
+    get:
+      summary: get all processed intervals subscriptions by user id
+      tags:
+        - "Users"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+
+components:
+  schemas:
+    User:
+        properties:
+          id:
+            type: integer
+          firstName:
+            type: string
+          lastName:
+            type: string
+          age:
+            type: integer
+    ProcessedIntervalSubscriptions:
+      properties:
+        interval:
+          type: object
+          properties:
+            timestampFrom:
+              type: long
+            timestampTo:
+              type: long
+        user:
+          $ref: '#/components/schemas/User'
+        averageWeekCount:
+          type: integer

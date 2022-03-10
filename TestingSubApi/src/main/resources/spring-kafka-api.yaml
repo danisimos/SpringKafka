@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  title: "Spring Kafka User Events"
+  description: "Spring Kafka User Events"
+  version: 1.0.0
+servers:
+  - url: "http://localhost:30080"
+paths:
+  /subscriptions:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Successful"
+        400:
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Wrong user age"
+components:
+  schemas:
+    Subscription:
+      properties:
+        user:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            age:
+              type: integer
+        subscriptionType:
+          type: string
+          enum: [LITE, PREMIUM, CLASSIC]
+        weekNumber:
+          type: integer

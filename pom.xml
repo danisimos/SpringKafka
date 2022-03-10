@@ -4,6 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.3</version>
+    </parent>
+
+
     <groupId>com.orioninc</groupId>
     <artifactId>spring-kafka</artifactId>
     <packaging>pom</packaging>
@@ -24,11 +31,33 @@
     <modules>
         <module>SpringKafkaDataHandler</module>
         <module>SpringKafkaDatabase</module>
+        <module>TestingSubApi</module>
+        <module>Api</module>
     </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.orioninc</groupId>
+                <artifactId>testing-sub-api</artifactId>
+                <version>0.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.orioninc.api</groupId>
+                <artifactId>Api</artifactId>
+                <version>0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.orioninc</groupId>
+                <artifactId>spring-kafka-data-handler</artifactId>
+                <version>0.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

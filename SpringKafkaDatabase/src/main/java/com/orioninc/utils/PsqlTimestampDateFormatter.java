@@ -8,12 +8,21 @@ import java.text.SimpleDateFormat;
 
 @Component
 public class PsqlTimestampDateFormatter {
-    public String format(String timestamp) throws ParseException {
+    public String formatFrom(String timestamp) throws ParseException {
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        Date parse = sdf1.parse("2019-02-03T15:02".replace("T", " "));
+        Date parse = sdf1.parse(timestamp.replace("T", " "));
 
-        return sdf2.format(parse);
+        return sdf2.format(parse) + ".000000";
+    }
+
+    public String formatTo(String timestamp) throws ParseException {
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Date parse = sdf1.parse(timestamp.replace("T", " "));
+
+        return sdf2.format(parse) + ".999999";
     }
 }

@@ -41,7 +41,6 @@ public class SendService {
 
     public void sendToIntervalsTopic(Interval interval, ProcessedIntervalSubscriptions processedIntervalSubscriptions) {
         ListenableFuture<SendResult<Interval, ProcessedIntervalSubscriptions>> listenableFuture = kafkaTemplateProcessedIntervalSubscriptions.sendDefault(interval, processedIntervalSubscriptions);
-
         listenableFuture.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable ex) {

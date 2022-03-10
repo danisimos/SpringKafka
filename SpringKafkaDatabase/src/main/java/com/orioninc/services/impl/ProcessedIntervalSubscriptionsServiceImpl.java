@@ -39,4 +39,9 @@ public class ProcessedIntervalSubscriptionsServiceImpl implements ProcessedInter
     public List<ProcessedIntervalSubscriptions> getByUser(User user) {
         return processedIntervalDataRepository.findByUser(user);
     }
+
+    @Override
+    public List<ProcessedIntervalSubscriptions> getByUserId(Integer id) {
+        return processedIntervalDataRepository.findByUserId(id);
+    }
 }

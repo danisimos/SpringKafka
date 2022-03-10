@@ -3,7 +3,6 @@ package com.orioninc.services.impl;
 import com.orioninc.models.Subscription;
 import com.orioninc.models.User;
 import com.orioninc.properties.ApplicationProperties;
-import org.joda.time.Duration;
 import org.joda.time.LocalTime;
 import org.springframework.stereotype.Service;
 
@@ -19,21 +18,16 @@ public class SubscriptionsSchedulingService {
 
     private final int intervalMinutes;
 
-    public SubscriptionsSchedulingService(IntervalSubscriptionsProcessingService intervalSubscriptionsProcessingService, ApplicationProperties applicationProperties) {
+    public SubscriptionsSchedulingService(IntervalSubscriptionsProcessingService intervalSubscriptionsProcessingService,
+                                          ApplicationProperties applicationProperties) {
         this.intervalSubscriptionsProcessingService = intervalSubscriptionsProcessingService;
         this.applicationProperties = applicationProperties;
-
         this.intervalMinutes = Integer.parseInt(applicationProperties.getUsersProcessIntervalMinutes());
     }
 
-    private long intervalStartTimestamp = 0;
+    private long intervalStartTimestamp;
     public void interval() {
         long intervalEndTimestamp = System.currentTimeMillis();
-
-        if(intervalStartTimestamp == 0) {
-            intervalStartTimestamp = System.currentTimeMillis();
-            return;
-        }
 
         intervalSubscriptionsProcessingService.process(usersEvents, intervalStartTimestamp, intervalEndTimestamp);
         usersEvents.clear();
@@ -61,6 +55,7 @@ public class SubscriptionsSchedulingService {
                 nextExecution = nextExecution.plusMinutes(intervalMinutes);
             }
 
+            intervalStartTimestamp = nextExecution.minusMinutes(intervalMinutes).toDateTimeToday().toDate().getTime();
             return nextExecution.toDateTimeToday().toDate();
         }
 

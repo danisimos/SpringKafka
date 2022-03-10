@@ -10,4 +10,5 @@ public interface ProcessedIntervalSubscriptionsService {
     List<ProcessedIntervalSubscriptions> getAllProcessedIntervalsSubscriptions();
     List<ProcessedIntervalSubscriptions> getByInterval(String from, String to);
     List<ProcessedIntervalSubscriptions> getByUser(User user);
+    List<ProcessedIntervalSubscriptions> getByUserId(Integer id);
 }

@@ -12,6 +12,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 public class Interval {
-    private Timestamp timestampFromg;
-    private Timestamp timestampTo;
+    private long timestampFrom;
+    private long timestampTo;
 }

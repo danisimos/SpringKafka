@@ -18,7 +18,7 @@
             "subscriptionType": subscriptionType,
             "weekNumber": weekCount
         };
-        $.ajax("http://localhost:8080/subscriptions", {
+        $.ajax("http://localhost:30080/subscriptions", {
             method: "POST",
             data: JSON.stringify(body),
             headers: {
