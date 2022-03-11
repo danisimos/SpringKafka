@@ -40,6 +40,41 @@
                     <target>16</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>5.4.0</version>
+                <executions>
+                    <execution>
+                        <id>openapi-codegen-java-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/spring-kafka-database-api.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>com.orioninc.api</apiPackage>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <configOptions>
+                                <oas3>true</oas3>
+                                <useSpringController>true</useSpringController>
+                                <useSpringfox>false</useSpringfox>
+                                <interfaceOnly>true</interfaceOnly>
+                                <sourceFolder>generated-sources</sourceFolder>
+                                <returnResponse>true</returnResponse>
+                                <library>spring-boot</library>
+                                <useTags>true</useTags>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                                <serializableModel>true</serializableModel>
+                            </configOptions>
+                            <importMappings>hh=com.orioninc.ProcessedIntervalSubscriptions,ProcessedIntervalSubscriptions=com.orioninc.ProcessedIntervalSubscriptions</importMappings>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -84,6 +119,25 @@
             <artifactId>spring-boot-starter-freemarker</artifactId>
             <version>2.4.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.parser.v3</groupId>
+            <artifactId>swagger-parser-v3</artifactId>
+            <version>2.0.30</version>
+        </dependency>
     </dependencies>
-
 </project>

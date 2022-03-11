@@ -37,9 +37,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+                $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
         400:
           description: BAD REQUEST
           content:
@@ -64,9 +62,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+                $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
   /users/{id}:
     parameters:
       - name: id
@@ -85,32 +81,13 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+                $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
 
 components:
   schemas:
     User:
-        properties:
-          id:
-            type: integer
-          firstName:
-            type: string
-          lastName:
-            type: string
-          age:
-            type: integer
+      $ref: '#/components/schemas/hh'
     ProcessedIntervalSubscriptions:
-      properties:
-        interval:
-          type: object
-          properties:
-            timestampFrom:
-              type: long
-            timestampTo:
-              type: long
-        user:
-          $ref: '#/components/schemas/User'
-        averageWeekCount:
-          type: integer
+      type: array
+      items:
+        $ref: '#/components/schemas/ProcessedIntervalSubscriptions'

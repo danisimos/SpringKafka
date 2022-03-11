@@ -2,9 +2,9 @@ package com.orioninc.utils;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Component
 public class PsqlTimestampDateFormatter {

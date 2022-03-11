@@ -12,8 +12,8 @@
     <artifactId>spring-kafka-data-handler</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
     </properties>
 
     <build>
@@ -36,14 +36,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>5.1.0</version>
+                <version>5.4.0</version>
                 <executions>
                     <execution>
                         <id>openapi-codegen-java-sources</id>
@@ -55,7 +55,6 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/spring-kafka-api.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-                            <generateApiTests>false</generateApiTests>
                             <apiPackage>com.orioninc.api</apiPackage>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <configOptions>
@@ -64,7 +63,6 @@
                                 <useSpringfox>false</useSpringfox>
                                 <interfaceOnly>true</interfaceOnly>
                                 <sourceFolder>generated-sources</sourceFolder>
-                                <dateLibrary>java8</dateLibrary>
                                 <returnResponse>true</returnResponse>
                                 <library>spring-boot</library>
                                 <useTags>true</useTags>
@@ -72,7 +70,7 @@
                                 <useSwaggerAnnotations>false</useSwaggerAnnotations>
                                 <serializableModel>true</serializableModel>
                             </configOptions>
-                            <importMappings>subsub=com.orioninc.models.Subscription</importMappings>
+                            <importMappings>Subscription=com.orioninc.models.Subscription</importMappings>
                         </configuration>
                     </execution>
                 </executions>
@@ -84,11 +82,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.6.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
             <version>2.6.3</version>
         </dependency>
         <dependency>
@@ -116,17 +109,6 @@
             <artifactId>spring-boot-starter-freemarker</artifactId>
             <version>2.4.5</version>
         </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>3.0.0</version>
-        </dependency>
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
@@ -136,6 +118,16 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.parser.v3</groupId>
+            <artifactId>swagger-parser-v3</artifactId>
+            <version>2.0.30</version>
         </dependency>
     </dependencies>
 </project>

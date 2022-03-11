@@ -5,11 +5,9 @@ import com.orioninc.models.User;
 import com.orioninc.repositories.ProcessedIntervalSubscriptionsRepository;
 import com.orioninc.repositories.UsersRepository;
 import com.orioninc.services.ProcessedIntervalSubscriptionsService;
-import com.orioninc.utils.PsqlTimestampDateFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.List;
 
 @Service

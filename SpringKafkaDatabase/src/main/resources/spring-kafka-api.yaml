@@ -6,17 +6,17 @@ info:
 servers:
   - url: "http://localhost:30080"
 tags:
-  - name: "Subscriptions"
+  - name: Subscriptions
 paths:
   /subscriptions:
     post:
       tags:
-        - "Subscriptions"
+        - Subscriptions
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/subsub'
+              $ref: '#/components/schemas/Subscription'
       responses:
         200:
           description: OK
@@ -34,5 +34,5 @@ paths:
                 example: "Wrong user age"
 components:
   schemas:
-    subsub:
-      $ref: '#/components/schemas/subsub'
+    Subscription:
+      $ref: '#/components/schemas/Subscription'

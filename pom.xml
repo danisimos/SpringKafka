@@ -31,8 +31,6 @@
     <modules>
         <module>SpringKafkaDataHandler</module>
         <module>SpringKafkaDatabase</module>
-        <module>TestingSubApi</module>
-        <module>Api</module>
     </modules>
 
     <properties>

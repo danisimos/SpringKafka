@@ -7,6 +7,8 @@ import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.models.Subscription;
 import com.orioninc.models.User;
 import com.orioninc.properties.KafkaProperties;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -149,5 +151,13 @@ public class ApplicationConfig {
         kafkaTemplate.setDefaultTopic(kafkaProperties.getTopics().getMetricCountTopic());
 
         return kafkaTemplate;
+    }
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI().info(new Info()
+                .title("Subscriptions service API")
+                .version("0.1")
+                .description("Service for POST subscriptions"));
     }
 }
