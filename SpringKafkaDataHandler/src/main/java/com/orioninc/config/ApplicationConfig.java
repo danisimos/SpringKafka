@@ -41,7 +41,7 @@ public class ApplicationConfig {
     public NewTopic subscriptionsTopic() {
         return TopicBuilder.name(kafkaProperties.getTopics().getSubscriptionsTopic())
                 .partitions(3)
-                .replicas(1)
+                .replicas(3)
                 .build();
     }
 
@@ -49,7 +49,7 @@ public class ApplicationConfig {
     public NewTopic intervalsTopic() {
         return TopicBuilder.name(kafkaProperties.getTopics().getIntervalsTopic())
                 .partitions(3)
-                .replicas(1)
+                .replicas(3)
                 .build();
     }
 
@@ -57,7 +57,7 @@ public class ApplicationConfig {
     public NewTopic metricCountTopic() {
         return TopicBuilder.name(kafkaProperties.getTopics().getMetricCountTopic())
                 .partitions(3)
-                .replicas(1)
+                .replicas(3)
                 .build();
     }
 

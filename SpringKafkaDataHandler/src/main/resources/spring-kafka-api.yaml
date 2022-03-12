@@ -7,9 +7,13 @@ servers:
   - url: "http://localhost:30080"
 tags:
   - name: Subscriptions
+security:
+  - BasicAuth: []
 paths:
   /subscriptions:
     post:
+      security:
+        - BasicAuth: []
       tags:
         - Subscriptions
       requestBody:
@@ -21,18 +25,31 @@ paths:
         200:
           description: OK
           content:
-            text/plain:
+            application/json:
               schema:
                 type: string
-                example: "Successful"
+                example: Successful
         400:
           description: Bad Request
           content:
-            text/plain:
+            application/json:
               schema:
                 type: string
-                example: "Wrong user age"
+                example: wrong user name
+        401:
+          description: Authentication information is missing or invalid
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Authentication information is missing or invalid
+
+
 components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
   schemas:
     Subscription:
       $ref: '#/components/schemas/Subscription'

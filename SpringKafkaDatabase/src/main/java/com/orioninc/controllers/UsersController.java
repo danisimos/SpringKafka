@@ -1,9 +1,12 @@
 package com.orioninc.controllers;
 
+
+import com.orioninc.api.UsersApi;
 import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.models.User;
 import com.orioninc.services.ProcessedIntervalSubscriptionsService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,16 +18,16 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class UsersController {
+public class UsersController implements UsersApi {
     private final ProcessedIntervalSubscriptionsService processedIntervalSubscriptionsService;
 
-    @GetMapping(value = "/users")
+    @Override
     public ResponseEntity<List<ProcessedIntervalSubscriptions>> getByUser(User user) {
         return new ResponseEntity<>(processedIntervalSubscriptionsService.getByUser(user), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/users/{id}")
-    public ResponseEntity<List<ProcessedIntervalSubscriptions>> getByUserId(@PathVariable("id") Integer id) {
+    @Override
+    public ResponseEntity<List<ProcessedIntervalSubscriptions>> usersIdGet(Integer id) {
         return new ResponseEntity<>(processedIntervalSubscriptionsService.getByUserId(id), HttpStatus.OK);
     }
 

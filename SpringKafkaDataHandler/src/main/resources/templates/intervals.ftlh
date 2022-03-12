@@ -14,13 +14,8 @@
 <script>
     function getIntervals(from, to) {
         document.getElementById("processedSubContainer").innerHTML = "";
-        $.ajax("http://localhost:30081/intervals", {
+        $.ajax("http://localhost:30081/intervals/" + from + "/" + to, {
             method: "GET",
-            data: {
-                from: from,
-                to: to
-            },
-
             success: function(data, textStatus, jqXHR) {
                 for(let i = 0; i < data.length; i++){
                     let firstName = data[i].user.firstName;

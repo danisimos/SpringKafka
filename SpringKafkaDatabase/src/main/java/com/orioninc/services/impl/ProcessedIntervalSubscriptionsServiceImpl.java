@@ -5,15 +5,18 @@ import com.orioninc.models.User;
 import com.orioninc.repositories.ProcessedIntervalSubscriptionsRepository;
 import com.orioninc.repositories.UsersRepository;
 import com.orioninc.services.ProcessedIntervalSubscriptionsService;
+import com.orioninc.utils.PsqlTimestampDateFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ProcessedIntervalSubscriptionsServiceImpl implements ProcessedIntervalSubscriptionsService {
     private final ProcessedIntervalSubscriptionsRepository processedIntervalDataRepository;
+    private final PsqlTimestampDateFormatter psqlTimestampDateFormatter;
     private final UsersRepository usersRepository;
 
     @Override
@@ -30,6 +33,8 @@ public class ProcessedIntervalSubscriptionsServiceImpl implements ProcessedInter
 
     @Override
     public List<ProcessedIntervalSubscriptions> getByInterval(String from, String to)  {
+        from = psqlTimestampDateFormatter.formatFrom(from);
+        to = psqlTimestampDateFormatter.formatTo(to);
         return processedIntervalDataRepository.findByInterval(from, to);
     }
 

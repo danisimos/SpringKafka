@@ -46,8 +46,8 @@ public class ProcessedIntervalSubscriptionsRepositoryJdbcImpl implements Process
 
     private final RowMapper<ProcessedIntervalSubscriptions> processedIntervalSubscriptionsRowMapperRowMapper = (row, rowNumber) -> ProcessedIntervalSubscriptions.builder()
             .interval(Interval.builder()
-                    .timestampFrom(row.getLong("timestamp_from"))
-                    .timestampTo(row.getLong("timestamp_to"))
+                    .timestampFrom(row.getTimestamp("timestamp_from").getTime())
+                    .timestampTo(row.getTimestamp("timestamp_to").getTime())
                     .build())
             .user(User.builder()
                     .firstName(row.getString("first_name"))

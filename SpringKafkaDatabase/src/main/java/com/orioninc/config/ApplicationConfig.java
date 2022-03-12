@@ -9,6 +9,8 @@ import com.orioninc.models.ProcessedIntervalSubscriptions;
 import com.orioninc.models.Subscription;
 import com.orioninc.properties.DBProperties;
 import com.orioninc.properties.KafkaProperties;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,5 +107,13 @@ public class ApplicationConfig {
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
+    }
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI().info(new Info()
+                .title("Subscriptions database information service API")
+                .version("0.1")
+                .description("Service for getting subscriptions data from database"));
     }
 }

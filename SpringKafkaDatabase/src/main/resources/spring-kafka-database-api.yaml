@@ -12,16 +12,18 @@ tags:
   - name: "Users"
 
 paths:
-  /intervals/from={from}&to={to}:
+  /intervals/{from}/{to}:
     parameters:
       - name: from
         description: timestamp of from of interval
+        example: 2022-03-11T19:06
         schema:
           type: string
         in: path
         required: true
       - name: to
         description: timestamp of to of interval
+        example: 2022-03-11T19:06
         schema:
           type: string
         in: path
@@ -37,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+                $ref: '#/components/schemas/ProcessedIntervalSubscriptionsList'
         400:
           description: BAD REQUEST
           content:
@@ -45,24 +47,33 @@ paths:
               schema:
                 type: string
                 example: "parse timestamp error"
-  /users/:
+  /users:
     get:
+      parameters:
+        - name: user
+          description: user inf
+          in: query
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              age:
+                type: integer
+      operationId: getByUser
       summary: get all processed intervals subscriptions by user information
       tags:
         - "Users"
-      requestBody:
-        required: false
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/User'
+
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+                $ref: '#/components/schemas/ProcessedIntervalSubscriptionsList'
   /users/{id}:
     parameters:
       - name: id
@@ -81,13 +92,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+                $ref: '#/components/schemas/ProcessedIntervalSubscriptionsList'
 
 components:
   schemas:
-    User:
-      $ref: '#/components/schemas/hh'
     ProcessedIntervalSubscriptions:
+      type: object
+    ProcessedIntervalSubscriptionsList:
       type: array
       items:
         $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
