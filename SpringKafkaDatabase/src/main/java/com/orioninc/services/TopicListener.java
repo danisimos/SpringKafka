@@ -6,5 +6,5 @@ import com.orioninc.models.Subscription;
 
 public interface TopicListener {
     void listenProcessedIntervalSubscriptions(ProcessedIntervalSubscriptions data, Interval interval, String topicName);
-    void listenMetricCount(String count, String topicName, Subscription subscription);
+    void listenMetricCount(String timestamp, String topicName, Subscription subscription);
 }

@@ -10,8 +10,21 @@ servers:
 tags:
   - name: "Intervals"
   - name: "Users"
+  - name: "Subscriptions"
 
 paths:
+  /subscriptions/getAll:
+    get:
+      summary: This gets all subscriptions
+      tags:
+        - "Subscriptions"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionsList'
   /intervals/{from}/{to}:
     parameters:
       - name: from
@@ -102,3 +115,9 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/ProcessedIntervalSubscriptions'
+    SubscriptionsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Subscription'
+    Subscription:
+      type: object

@@ -54,8 +54,8 @@ public class SendService {
         });
     }
 
-    public void sentToMetricCountTopic(Subscription subscription, int subscriptionsCount) {
-        ListenableFuture<SendResult<String, Subscription>> listenableFuture = kafkaTemplateMetricCount.sendDefault(Integer.toString(subscriptionsCount), subscription);
+    public void sentToMetricCountTopic(Subscription subscription, long timestamp) {
+        ListenableFuture<SendResult<String, Subscription>> listenableFuture = kafkaTemplateMetricCount.sendDefault(Long.toString(timestamp), subscription);
 
         listenableFuture.addCallback(new ListenableFutureCallback<>() {
             @Override

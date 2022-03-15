@@ -19,4 +19,9 @@ public class ViewController {
     public String getUsersPage() {
         return "users";
     }
+
+    @GetMapping("subscriptions/getAll")
+    public String getAllSubscriptionsPage() {
+        return "getAllSubscriptionsPage";
+    }
 }

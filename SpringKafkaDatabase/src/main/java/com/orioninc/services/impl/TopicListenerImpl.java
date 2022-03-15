@@ -13,6 +13,8 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+
 @Service
 @RequiredArgsConstructor
 public class TopicListenerImpl implements TopicListener {
@@ -37,11 +39,12 @@ public class TopicListenerImpl implements TopicListener {
     @KafkaListener(topics = "${kafka.topics.metric_count_topic}",
             groupId = "group2",
             containerFactory = "kafkaListenerContainerFactoryMetricCount")
-    public void listenMetricCount(@Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String count,
+    public void listenMetricCount(@Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String timestamp,
                                   @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName,
                                   Subscription subscription) {
+        subscription.setTimestamp(Long.parseLong(timestamp.replaceAll("\"", "")));
         subscriptionsService.saveSubscription(subscription);
 
-        logger.info("Received from: " + topicName + " " + count + " " + subscription);
+        logger.info("Received from: " + topicName + " " + new Date(Long.parseLong(timestamp.replaceAll("\"", ""))) + " " + subscription);
     }
 }

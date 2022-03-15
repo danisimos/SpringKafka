@@ -20,11 +20,12 @@ public class ListenService {
     @KafkaListener(topics = "${kafka.topics.subscriptions-topic}", groupId = "group1")
     public void listenJsonUsers(Subscription subscription,
                                 @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) User user,
-                                @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName) {
+                                @Header(KafkaHeaders.RECEIVED_TOPIC) String topicName,
+                                @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long timestamp) {
         logger.info("Received from: " + topicName + user + " " + subscription);
 
         subscriptionsSchedulingService.process(user, subscription);
-        metricsCountService.process(user, subscription);
+        metricsCountService.process(user, subscription, timestamp);
     }
 
 }

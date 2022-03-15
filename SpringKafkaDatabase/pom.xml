@@ -74,6 +74,7 @@
                                 <importMapping>User=com.orioninc.models.User</importMapping>
                                 <importMapping>Interval=com.orioninc.models.Interval</importMapping>
                                 <importMapping>ProcessedIntervalSubscriptions=com.orioninc.models.ProcessedIntervalSubscriptions</importMapping>
+                                <importMapping>Subscription=com.orioninc.models.Subscription</importMapping>
                             </importMappings>
                         </configuration>
                     </execution>

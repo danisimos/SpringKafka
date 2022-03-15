@@ -13,4 +13,5 @@ public class Subscription {
     private User user;
     private SubscriptionType subscriptionType;
     private int weekNumber;
+    private long timestamp;
 }

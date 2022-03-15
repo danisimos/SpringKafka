@@ -9,7 +9,6 @@ import com.orioninc.utils.PsqlTimestampDateFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.List;
 
 @Service
